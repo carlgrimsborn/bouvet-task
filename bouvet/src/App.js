@@ -21,7 +21,7 @@ function App() {
     }, 30000);
 
   const asyncTask = async () => {
-    fetchData();
+    await fetchData();
   };
 
   useEffect(() => {
