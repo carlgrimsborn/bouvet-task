@@ -31,10 +31,18 @@ function App() {
 
   const fetchData = async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:4000/");
-    console.log("resp: ", res);
-    setData(convertStringToData(res.data.data));
-    setLoading(false);
+    try {
+      const res = await axios.get("http://localhost:4000/");
+      console.log("resp: ", res);
+      if (res.data) {
+        setData(convertStringToData(res.data.data));
+        setLoading(false);
+      } else if (res.errors) {
+        throw new Error("responded with errors: ", res.errors);
+      }
+    } catch (e) {
+      alert(e.toString());
+    }
     console.log(data, "data1");
   };
 
