@@ -15,17 +15,17 @@ function App() {
     },
   ]);
 
-  const loadTimeout = () =>
-    setTimeout(() => {
-      setReload(!reload);
-    }, 30000);
+  // const loadTimeout = () =>
+  //   setTimeout(() => {
+  //     setReload(!reload);
+  //   }, 30000);
 
   const asyncTask = async () => {
     await fetchData();
   };
 
   useEffect(() => {
-    loadTimeout();
+    // loadTimeout();
     asyncTask();
   }, [reload]);
 
@@ -71,7 +71,7 @@ function App() {
         }
         if (
           itemsDone.map((item) => {
-            if (i === item) {
+            if (indexes[i] === indexes[item]) {
               return true;
             }
             return false;
@@ -81,15 +81,26 @@ function App() {
         }
         itemsDone.push(i);
         console.log("does", i);
-        let title2 = false;
+        let title2 = "";
 
-        if (data.charAt(indexes[i + 1] + 1) !== "h") {
-          if (data.charAt(indexes[i + 1] + 1) === "^\\s+$") {
-            return;
+        if (
+          data.charAt(indexes[i + 1] + 1) !== "h" &&
+          data.charAt(indexes[i + 1] + 1) !== "^\\s+$"
+        ) {
+          if (isNaN(indexes[i + 1] + 1)) {
+          } else {
+            console.log(indexes[i + 1] + 1, "data ind");
+            console.log(data.charAt(indexes[i + 1] + 1), "charAt");
+            title2 = title2 + data.slice(indexes[i + 1], indexes[i + 2]);
+            console.log(indexes[i + 1], indexes[i + 2], "letters");
+            console.log(title2, "title2");
+            itemsDone.push(i + 2);
+            console.log(data[indexes[i + 2] + 1], "isNextH");
+            if (data[indexes[i + 2] + 1] === "h") {
+              //new row
+              title2 = "";
+            }
           }
-          console.log(data.charAt(indexes[i + 1] + 1), "charAt");
-          title2 = data.slice(indexes[i + 1], indexes[i + 2]);
-          itemsDone.push(i + 2);
         }
         const image =
           i >= 4
@@ -98,7 +109,11 @@ function App() {
         const obj = {
           image: image,
           title: `${data.slice(indexes[i] + 1, indexes[i + 1])}${
-            indexes.pop() === indexes[i] ? "" : title2 ? " " + title2 : ""
+            indexes.pop() === indexes[i]
+              ? ""
+              : title2.length >= 1
+              ? " " + title2
+              : ""
           }`,
         };
         objectArray.push(obj);
